@@ -9,7 +9,7 @@ import json
 config_file = "../Config/db_config.json"
 
 
-# reads config.json file from current directory.
+# reads db_config.json and returns the configuration to the caller.
 def read_conf():
     try:
         with open(config_file, 'r') as f:
