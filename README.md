@@ -36,8 +36,16 @@ solve that? Bonus if you implement this.
 * What are some strategies you might use to update the service with new URLs?
 Updates may be as much as 5 thousand URLs a day with updates arriving every
 10 minutes.
-  
-####Hints
+
+#### Hints
 * It would be good to "release" frequent updates by pushing updates to a shared git repo
 * Don't forget some unit tests (at least something representative).
+
+## Implementation Notes
+#### Info:
+* SampleMalwareList.txt contains 1104 urls and has been downloaded from: http://www.malwaredomainlist.com/hostslist/hosts.txt
+* Implementation uses MariaDB
+
+#### How to use
+* To populate a DB with malware URLs from SampleMalwareList.txt, run DB_Prepare.py
 

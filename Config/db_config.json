@@ -1,0 +1,12 @@
+{
+  "DatabaseName": "URLLookup",
+  "TableName": "Malware",
+  "ColumnName": "url",
+  "ConnectionInfo": {
+    "user": "root",
+    "password": "",
+    "host": "localhost",
+    "port": 3306
+  }
+}
+
