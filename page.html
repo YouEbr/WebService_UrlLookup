@@ -1,0 +1,33 @@
+<HTML>
+<TITLE>Simple web page to test the Url lookup web service</TITLE>
+
+<BODY>
+<b>Simple web page to test the Url lookup web service</b><p>
+<hr>
+
+<FORM ACTION="http://localhost:5000/urlinfo/1">
+<label for="fname">Url:</label><INPUT TYPE="TEXT" NAME="url" SIZE="25"><BR>
+<INPUT TYPE="SUBMIT" NAME="Submit">
+</FORM>
+
+<hr>
+<p> OR Create a GET request similar to any of followings:
+<ul>
+  <li>http://127.0.0.1:5000/urlinfo/1/www.google.com:80/index.html </li>
+  <li>http://127.0.0.1:5000/urlinfo/1/www.google.com:80</li> 
+</ul>
+</p>
+
+<hr>
+<p>
+GET response is a json with following fileds
+{
+    "error": VAL,
+    "malware": VAL,
+    "message": "VAL",
+    "url": "VAL"
+}
+</p>
+
+</BODY>
+</HTML>
