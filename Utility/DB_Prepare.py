@@ -4,29 +4,8 @@
 #####################################################################
 
 import mariadb
-import json
-
+from Utility.DB_Config_Loader import read_conf
 config_file = "../Config/db_config.json"
-
-
-# reads db_config.json and returns the configuration to the caller.
-def read_conf():
-    try:
-        with open(config_file, 'r') as f:
-            config = json.load(f)
-    except (IOError, PermissionError):
-        print(f'ERROR: Unable to read {config_file}')
-        exit(-1)
-    except json.decoder.JSONDecodeError:
-        print(f'ERROR: Malformed {config_file}')
-        exit(-1)
-
-    DatabaseName = config['DatabaseName']
-    TableName = config['TableName']
-    ColumnName = config['ColumnName']
-    ConnectionInfo = config['ConnectionInfo']
-
-    return DatabaseName, TableName, ColumnName, ConnectionInfo
 
 
 def create_db(cursor, db_name):
@@ -38,7 +17,7 @@ def create_db(cursor, db_name):
 
 
 def main():
-    DatabaseName, TableName, ColumnName, ConnectionInfo = read_conf()
+    DatabaseName, TableName, ColumnName, ConnectionInfo = read_conf(config_file)
     with mariadb.connect(**ConnectionInfo) as conn:
         cursor = conn.cursor()
         try:

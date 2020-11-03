@@ -1,7 +1,7 @@
 {
-  "DatabaseName": "URLLookup",
-  "TableName": "Malware",
-  "ColumnName": "url",
+  "Database": "URLLookup",
+  "Table": "Malware",
+  "Column": "url",
   "ConnectionInfo": {
     "user": "root",
     "password": "",
