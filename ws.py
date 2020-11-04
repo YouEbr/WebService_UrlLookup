@@ -13,7 +13,18 @@ DatabaseName = None
 TableName = None
 ColumnName = None
 ConnectionInfo = None
-
+url_safe_msg = "Url is safe"
+url_unsafe_msg = "Url is NOT safe"
+url_invalid = "Invalid URL was entered"
+url_missing = "url is not provided. Try /help"
+resource_not_found = "The resource could not be found. Try /help"
+help_msg = "Welcome to UrlLookup webservice." \
+           "Construct a GET request similar to any of the followings:" \
+           "(i) http://127.0.0.1:5000/urlinfo/1/www.google.com:80/index.hmtl " \
+           "(ii) http://127.0.0.1:5000/urlinfo/1/www.google.com:80 " \
+           "(iii) http://127.0.0.1:5000/urlinfo/1?url=www.google.com "
+default_page_error_msg = "<h1>Error occurred while opening default/test page. Add \"/help\"" \
+                         " to the url for some help.</h1>"
 
 # Landing/default page
 @app.route('/', methods=['GET'])
@@ -21,10 +32,9 @@ def home():
     try:
         with open('page.html', 'r') as f:
             page = f.read()
-            return page
+            return page, 200
     except:
-        return "<h1>Error occurred while opening default/test page. Add \"/help\"" \
-               " to the url for some help.</h1>"
+        return default_page_error_msg, 500
 
 
 # Handles urls like:
@@ -63,7 +73,7 @@ def urlinfo_query_str():
             result = create_result(error=False, malware=malware, url=url, msg=msg)
             return result, 200
         else:
-            result = create_result(error=True, malware=None, url=url, msg="url is not provided. Try /help")
+            result = create_result(error=True, malware=None, url=url, msg=url_missing)
             return result, 404
     return page_not_found(None)
 
@@ -71,20 +81,14 @@ def urlinfo_query_str():
 # To provide help/usage! Useful if landing page (/) goes bananas.
 @app.route('/help', methods=['GET'])
 def usage():
-    result = create_result(error=False, malware=None,
-                           url="", msg="Welcome to UrlLookup webservice."
-                                           "Construct a GET request similar to any of the followings:"
-                                           "(i) http://127.0.0.1:5000/urlinfo/1/www.google.com:80/index.hmtl "
-                                           "(ii) http://127.0.0.1:5000/urlinfo/1/www.google.com:80 "
-                                           "(iii) http://127.0.0.1:5000/urlinfo/1?url=www.google.com "
-                           )
+    result = create_result(error=False, malware=None, url="", msg=help_msg)
     return result, 200
 
 
 @app.errorhandler(404)
 def page_not_found(e):
     print("page_not_found")
-    result = create_result(error=True, malware=None, url="", msg="The resource could not be found. Try /help")
+    result = create_result(error=True, malware=None, url="", msg=resource_not_found)
     return result, 404
 
 
@@ -97,9 +101,9 @@ def check_reputation(url):
 
     host = get_host(url)
     if not host:
-        return None, "Invalid URL was entered"
+        return None, url_invalid
 
-    print("Checking {} against DB", host)
+    print("Checking {} against DB".format(host))
 
     try:
         with mariadb.connect(database=DatabaseName, **ConnectionInfo) as conn:
@@ -120,9 +124,9 @@ def check_reputation(url):
 
     if foundIt is not None:
         if not foundIt:  # it is NOT malware
-            msg = "Url is safe"
+            msg = url_safe_msg
         else:
-            msg = "Url is NOT safe"
+            msg = url_unsafe_msg
 
     return foundIt, msg
 
@@ -153,15 +157,15 @@ def check_and_setup():
 
 # Extracts the host from passed in URL
 def get_host(url):
-    # For any of the following urls, it returns goglw.com
-    # "wwww.goglw.com"
-    # "http://wwww.goglw.com"
-    # "goglw.com"
-    # "wwww.goglw.com:80"
-    # "goglw.com:80"
-    # "https://www.goglw.com:80"
+    # For any of the following urls, it returns google.com
+    # "http://www.google.com:443/about"
+    # "https://www.google.com"
+    # "http://www.google.com/about"
+    # "www.google.com:443/about"
+    # "www.google.com
+    # "google.com"
 
-    regex = r'^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?(:\d*)?$'
+    regex = r'^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})(:\d*)?([\/\w \.-]*)*\/?$'
     match = re.search(regex, url)
 
     if match:
