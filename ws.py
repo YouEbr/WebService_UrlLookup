@@ -5,11 +5,10 @@ import flask
 import mariadb
 from Utility.DB_Config_Loader import read_conf
 import re
+import waitress
 
-config_file = "Config/db_config.json"
 
 app = flask.Flask(__name__)
-app.config["DEBUG"] = True
 DatabaseName = None
 TableName = None
 ColumnName = None
@@ -138,7 +137,7 @@ def create_result(error, malware, url, msg):
 def check_and_setup():
     # Can I read from config? It exits if encountered any issues. Hence no need to use try:
     global DatabaseName, TableName, ColumnName, ConnectionInfo
-    DatabaseName, TableName, ColumnName, ConnectionInfo = read_conf(config_file)
+    DatabaseName, TableName, ColumnName, ConnectionInfo = read_conf()
 
     # Can I access and read from DB?
     try:
@@ -176,6 +175,18 @@ def get_host(url):
         return None
 
 
-if __name__ == '__main__':
+def main(argv):
     check_and_setup()
-    app.run()
+    if argv == "prod":  # production
+        app.config["DEBUG"] = False
+        app.config["ENV"] = "production"
+        waitress.serve(app, host='0.0.0.0', port=5000)
+    else:                    # development - Default
+        app.config["DEBUG"] = True
+        app.config["ENV"] = "development"
+        app.run(host='localhost', port=5000)
+
+
+if __name__ == '__main__':
+    main(None)
+

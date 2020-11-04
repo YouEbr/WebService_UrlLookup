@@ -2,10 +2,11 @@
 # The utility that creates and populates a DB/table with malware urls.
 # Load the DB info out of ../Config/db_config.json
 #####################################################################
-
+import os
 import mariadb
 from Utility.DB_Config_Loader import read_conf
-config_file = "../Config/db_config.json"
+
+sampleList = "SampleMalwareList.txt"
 
 
 def create_db(cursor, db_name):
@@ -17,7 +18,7 @@ def create_db(cursor, db_name):
 
 
 def main():
-    DatabaseName, TableName, ColumnName, ConnectionInfo = read_conf(config_file)
+    DatabaseName, TableName, ColumnName, ConnectionInfo = read_conf()
     with mariadb.connect(**ConnectionInfo) as conn:
         cursor = conn.cursor()
         try:
@@ -39,7 +40,9 @@ def main():
             print("Error while creating {} ".format(TableName))
             print(err)
 
-        with open("SampleMalwareList.txt") as file:
+        file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), sampleList)
+        print(file_path)
+        with open(file_path) as file:
             for url in file:
                 try:
                     cursor.execute(
