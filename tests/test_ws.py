@@ -6,6 +6,8 @@ class TestWebService(unittest.TestCase):
 
     def setUp(self):
         ws.check_and_setup()
+        ws.app.testing = True
+        self.client = ws.app.test_client()
 
     def tearDown(self):
         pass
@@ -24,3 +26,8 @@ class TestWebService(unittest.TestCase):
         self.assertEqual(ws.check_reputation("google.com"), (False, ws.url_safe_msg))
         self.assertEqual(ws.check_reputation("999fitness.com"), (True, ws.url_unsafe_msg))
         self.assertEqual(ws.check_reputation("abc")[0], None)
+
+    def test_home(self):
+        resp = self.client.get('/')
+        self.assertEqual(resp.status_code, 200)
+        #  resp.status, resp.data, resp.content_type, resp.content_length  # https://tedboy.github.io/flask/generated/generated/flask.Response.html

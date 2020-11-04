@@ -1,18 +1,19 @@
 ####################################################
 # Web Service to satisfy url lookups
 ####################################################
+import os
 import flask
 import mariadb
 from Utility.DB_Config_Loader import read_conf
 import re
 import waitress
 
-
 app = flask.Flask(__name__)
 DatabaseName = None
 TableName = None
 ColumnName = None
 ConnectionInfo = None
+home_page = "page.html"
 url_safe_msg = "Url is safe"
 url_unsafe_msg = "Url is NOT safe"
 url_invalid = "Invalid URL was entered"
@@ -26,11 +27,13 @@ help_msg = "Welcome to UrlLookup webservice." \
 default_page_error_msg = "<h1>Error occurred while opening default/test page. Add \"/help\"" \
                          " to the url for some help.</h1>"
 
+
 # Landing/default page
 @app.route('/', methods=['GET'])
 def home():
     try:
-        with open('page.html', 'r') as f:
+        file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), home_page)
+        with open(file_path, 'r') as f:
             page = f.read()
             return page, 200
     except:
@@ -185,7 +188,7 @@ def main(argv):
         app.config["DEBUG"] = False
         app.config["ENV"] = "production"
         waitress.serve(app, host='0.0.0.0', port=5000)
-    else:                    # development - Default
+    else:  # development - Default
         app.config["DEBUG"] = True
         app.config["ENV"] = "development"
         app.run(host='localhost', port=5000)
@@ -193,4 +196,3 @@ def main(argv):
 
 if __name__ == '__main__':
     main(None)
-
