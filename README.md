@@ -49,7 +49,8 @@ Updates may be as much as 5 thousand URLs a day with updates arriving every
 #### How to use
 
 ##### Manual execution:
-* Environment Setup:
+* Environment Setup: Ubuntu 20.04.1 LTS, 10.3.25-MariaDB-0ubuntu0.20.04.1, Python 3.8.5
+* Package installs:
 
         sudo apt install mariadb-server        
         sudo apt-get install -y libmariadb-dev        
@@ -66,3 +67,19 @@ Updates may be as much as 5 thousand URLs a day with updates arriving every
         python3 -m unittest discover tests
 
 
+
+#### Miscellaneous
+ To allow running MariaDB without "sudo"
+ 
+After first install, first run it with sudo like:
+
+        mariaDB -u root
+Then   
+   
+    SELECT User,Host FROM mysql.user;    
+    DROP USER 'root'@'localhost';
+    CREATE USER 'root'@'%' IDENTIFIED BY '';
+    GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+    SELECT User,Host FROM mysql.user;
+    CREATE USER 'YOUR USER NAME'@'%' IDENTIFIED BY '';
+    SELECT User,Host FROM mysql.user;  
