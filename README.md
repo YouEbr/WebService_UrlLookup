@@ -47,5 +47,22 @@ Updates may be as much as 5 thousand URLs a day with updates arriving every
 * Implementation uses MariaDB
 
 #### How to use
-* To populate a DB with malware URLs from SampleMalwareList.txt, run DB_Prepare.py
+
+##### Manual execution:
+* Environment Setup:
+
+        sudo apt install mariadb-server        
+        sudo apt-get install -y libmariadb-dev        
+        sudo apt install python3        
+        sudo apt install pip3        
+        pip3 install -r requirements.txt  (pip3 install flask, pip3 install mariadb, pip3 install waitress)
+
+* To run the web server
+
+        python3 run.py
+
+* To run the unittests
+
+        python3 -m unittest discover tests
+
 
