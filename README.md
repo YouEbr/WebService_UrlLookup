@@ -53,9 +53,8 @@ Updates may be as much as 5 thousand URLs a day with updates arriving every
 * Package installs:
 
         sudo apt install mariadb-server        
-        sudo apt-get install -y libmariadb-dev        
-        sudo apt install python3        
-        sudo apt install pip3        
+        sudo apt install -y libmariadb-dev        
+        sudo apt install python3-pip        
         pip3 install -r requirements.txt  (pip3 install flask, pip3 install mariadb, pip3 install waitress)
 
 * To run the web server
@@ -69,17 +68,19 @@ Updates may be as much as 5 thousand URLs a day with updates arriving every
 
 
 #### Miscellaneous
- To allow running MariaDB without "sudo"
+ To allow running MariaDB without "sudo", in order words, if you are receiving following error:
  
-After first install, first run it with sudo like:
+        Access denied for user 'root'@'localhost'
+ 
+After installing mariadb, first run it with sudo like:
 
-        mariaDB -u root
+        mariadb -u root
 Then   
    
-    SELECT User,Host FROM mysql.user;    
-    DROP USER 'root'@'localhost';
-    CREATE USER 'root'@'%' IDENTIFIED BY '';
-    GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
-    SELECT User,Host FROM mysql.user;
-    CREATE USER 'YOUR USER NAME'@'%' IDENTIFIED BY '';
-    SELECT User,Host FROM mysql.user;  
+        SELECT User,Host FROM mysql.user;    
+        DROP USER 'root'@'localhost';
+        CREATE USER 'root'@'%' IDENTIFIED BY '';
+        GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+        SELECT User,Host FROM mysql.user;
+        CREATE USER 'YOUR USER NAME'@'%' IDENTIFIED BY ''; [optional: to use your username instead of root] 
+        SELECT User,Host FROM mysql.user;  
