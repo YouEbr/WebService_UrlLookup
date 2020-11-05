@@ -168,19 +168,13 @@ def get_host(url):
     # "www.google.com
     # "google.com"
 
-    regex = r'^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})(:\d*)?([\/\w \.-]*)*\/?$'
-    match = re.search(regex, url)
-
-    if match:
-        if match.group(2) is not None:
-            domain = match.group(2).lstrip(r'www\d?.')
-        if match.group(3) is not None:
-            com = match.group(3)
-        host = "{0}.{1}".format(domain, com)
-        return host
-    else:
-        return None
-
+    regex = r'^(https?:\/\/)?(w*\d*\.)?([\da-z\.-]+)\.([a-z\.]{2,6})(:\d*)?([\/\w \.-]*)*\/?$'
+    _url = url.lower()
+    match = re.search(regex, _url)
+    if match is None: return None
+    if match.group(3) is None or match.group(4) is None: return None
+    host = match.group(3) + "." + match.group(4)
+    return host
 
 def main(argv):
     check_and_setup()
