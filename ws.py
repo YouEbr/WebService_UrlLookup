@@ -95,7 +95,7 @@ def urlinfo(url):
 # Is URL malware?
 # Returns True/False/None and a message. None is used when error happens.
 def check_reputation(url):
-    print(f"Checking the reputation of {url}")
+    print(f"Checking the reputation of \'{url}\'")
     foundIt = False
     msg = ""
 
