@@ -106,6 +106,7 @@ def check_reputation(url):
 
     host = get_host(url)
     if not host:
+        print("{} is invalid url".format(url))
         return None, url_invalid
 
     print("Checking {} against DB".format(host))
