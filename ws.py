@@ -7,6 +7,7 @@ import mariadb
 from Utility.DB_Config_Loader import read_conf
 import re
 import waitress
+from time import sleep
 
 app = flask.Flask(__name__)
 DatabaseName = None
@@ -26,6 +27,7 @@ help_msg = "Welcome to UrlLookup webservice." \
            "(iii) http://127.0.0.1:5000/urlinfo/1?url=www.google.com "
 default_page_error_msg = "<h1>Error occurred while opening default/test page. Add \"/help\"" \
                          " to the url for some help.</h1>"
+MAX_RETRIES_NUM = 15
 
 
 # Landing/default page
@@ -108,22 +110,33 @@ def check_reputation(url):
 
     print("Checking {} against DB".format(host))
 
-    try:
-        with mariadb.connect(database=DatabaseName, **ConnectionInfo) as conn:
-            cursor = conn.cursor()
-            sql = '''SELECT * FROM {} WHERE {}=?'''.format(TableName, ColumnName)
-            cursor.execute(sql, (host,))
-            for row in cursor:
-                foundIt = True
-                print(f"Found {row[0]} in {TableName} table of {DatabaseName} database.")
+    successful_connection = False
+    retry_num = 1
+    while (not successful_connection) and (retry_num < MAX_RETRIES_NUM):
+        try:
+            with mariadb.connect(database=DatabaseName, **ConnectionInfo) as conn:
+                successful_connection = True
+                cursor = conn.cursor()
+                sql = '''SELECT * FROM {} WHERE {}=?'''.format(TableName, ColumnName)
+                cursor.execute(sql, (host,))
+                for row in cursor:
+                    foundIt = True
+                    print(f"Found {row[0]} in {TableName} table of {DatabaseName} database.")
 
-            if not foundIt:
-                print(f"{url} was not found in any of DBs.")
+                if not foundIt:
+                    print(f"{url} was not found in any of DBs.")
 
-    except Exception as err:
-        print(err)
+        except mariadb.Error as err:
+            if "Can't connect to" in str(err):
+                print(err)
+                print("Sleeping for 1 seconds before retrying...")
+                sleep(1)
+                retry_num += 1
+
+    if retry_num == MAX_RETRIES_NUM:
+        msg = "Could not connect to database server. Not trying any more.."
+        print(msg)
         foundIt = None
-        msg = err.__str__()
 
     if foundIt is not None:
         if not foundIt:  # it is NOT malware
@@ -147,14 +160,25 @@ def check_and_setup():
     DatabaseName, TableName, ColumnName, ConnectionInfo = read_conf()
 
     # Can I access and read from DB?
-    try:
-        with mariadb.connect(database=DatabaseName, **ConnectionInfo) as conn:
-            cursor = conn.cursor()
-            cursor.execute("""SELECT COUNT(*) FROM {}""".format(TableName))
-            print("{} urls exists in {} table of {} database".format(cursor.fetchall()[0][0], TableName,
-                                                                     DatabaseName))
-    except Exception as err:
-        print(err)
+    successful_connection = False
+    retry_num = 1
+    while (not successful_connection) and (retry_num < MAX_RETRIES_NUM):
+        try:
+            with mariadb.connect(database=DatabaseName, **ConnectionInfo) as conn:
+                successful_connection = True
+                cursor = conn.cursor()
+                cursor.execute("""SELECT COUNT(*) FROM {}""".format(TableName))
+                print("{} urls exists in {} table of {} database".format(cursor.fetchall()[0][0], TableName,
+                                                                         DatabaseName))
+        except mariadb.Error as err:
+            if "Can't connect to" in str(err):
+                print(err)
+                print("Sleeping for 1 seconds before retrying...")
+                sleep(1)
+                retry_num += 1
+
+    if retry_num == MAX_RETRIES_NUM:
+        print("Could not connect to database server. Exiting...")
         exit(-1)
 
 
@@ -175,6 +199,7 @@ def get_host(url):
     if match.group(3) is None or match.group(4) is None: return None
     host = match.group(3) + "." + match.group(4)
     return host
+
 
 def main(argv):
     check_and_setup()

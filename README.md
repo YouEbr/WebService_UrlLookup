@@ -52,9 +52,7 @@ Updates may be as much as 5 thousand URLs a day with updates arriving every
 * Environment Setup: Ubuntu 20.04.1 LTS, 10.3.25-MariaDB-0ubuntu0.20.04.1, Python 3.8.5
 * Package installs:
 
-        sudo apt install mariadb-server        
-        sudo apt install -y libmariadb-dev        
-        sudo apt install python3-pip        
+        sudo apt install -y mariadb-server libmariadb-dev python3-pip
         pip3 install -r requirements.txt  (pip3 install flask, pip3 install mariadb, pip3 install waitress)
 
 * To run the web server
