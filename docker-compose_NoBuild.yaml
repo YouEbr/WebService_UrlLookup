@@ -1,15 +1,13 @@
 version: "3"
 services:
   urllookup:
-    build: ./
+    image: youebr/urllookup:11072020
     links:
       - mariadb
     ports:
       - "5000:5000"
     depends_on:
       - mariadb
-    environment:
-      PYTHONUNBUFFERED: 1
 
 
   mariadb:

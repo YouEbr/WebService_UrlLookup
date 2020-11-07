@@ -1,0 +1,16 @@
+version: "3"
+services:
+  urllookup:
+    build: ./
+    links:
+      - mariadb
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mariadb
+
+
+  mariadb:
+    image: linuxserver/mariadb
+    ports:
+      - "33060:3306"

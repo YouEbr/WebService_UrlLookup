@@ -1,6 +1,9 @@
 # Defining Base Image
 FROM python:3.8
 
+# DO not buffer the outputs, send them right to the terminal
+ENV PYTHONUNBUFFERED 1
+
 # Setting working directory inside the container
 WORKDIR /urllookup
 
