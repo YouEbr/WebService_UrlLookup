@@ -53,13 +53,7 @@ def urlinfo_query_param(host_and_port, orig_path_and_query_str=None):
     if orig_path_and_query_str:
         print("original_path_and_query_string:" + orig_path_and_query_str)
 
-    malware, msg = check_reputation(url=host_and_port)
-    if malware is None:
-        result = create_result(error=True, malware=None, url=host_and_port, msg=msg)
-        return result, 404
-
-    result = create_result(error=False, malware=malware, url=host_and_port, msg=msg)
-    return result, 200
+    return urlinfo(url=host_and_port)
 
 
 # Handles urls like:
@@ -68,18 +62,9 @@ def urlinfo_query_param(host_and_port, orig_path_and_query_str=None):
 def urlinfo_query_str():
     if 'url' in flask.request.args:
         url = flask.request.args.get('url')
-        print("url= " + url)
-        if url:
-            malware, msg = check_reputation(url=url)
-            if malware is None:
-                result = create_result(error=True, malware=None, url=url, msg=msg)
-                return result, 404
 
-            result = create_result(error=False, malware=malware, url=url, msg=msg)
-            return result, 200
-        else:
-            result = create_result(error=True, malware=None, url=url, msg=url_missing)
-            return result, 404
+        return urlinfo(url=url)
+
     return page_not_found(None)
 
 
@@ -92,9 +77,19 @@ def usage():
 
 @app.errorhandler(404)
 def page_not_found(e):
-    print("page_not_found")
+    print(resource_not_found)
     result = create_result(error=True, malware=None, url="", msg=resource_not_found)
     return result, 404
+
+
+def urlinfo(url):
+    malware, msg = check_reputation(url=url)
+    if malware is None:
+        result = create_result(error=True, malware=None, url=url, msg=msg)
+        return result, 404
+
+    result = create_result(error=False, malware=malware, url=url, msg=msg)
+    return result, 200
 
 
 # Is URL malware?
@@ -104,12 +99,14 @@ def check_reputation(url):
     foundIt = False
     msg = ""
 
+    if not url:  # blank url!
+        print(url_missing)
+        return None, url_missing
+
     host = get_host(url)
     if not host:
-        print("{} is invalid url".format(url))
+        print(url_invalid)
         return None, url_invalid
-
-    print("Checking {} against DB".format(host))
 
     successful_connection = False
     retry_num = 1
@@ -144,6 +141,7 @@ def check_reputation(url):
             msg = url_safe_msg
         else:
             msg = url_unsafe_msg
+        print(msg)
 
     return foundIt, msg
 
