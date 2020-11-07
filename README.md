@@ -48,6 +48,24 @@ Updates may be as much as 5 thousand URLs a day with updates arriving every
 
 #### How to use
 
+##### Docker execution:
+* Makes sure you have "docker" and "docker-compose" installed properly. Then simply run:
+
+    
+     docker-compose up
+
+
+Then, find the IP address of the running containers by running:
+    
+     docker ps
+     docker inspect DOCKER_ID | grep IPAddress
+     
+
+Note1: "docker-compose" will build the web service and run it alongside a MariaDB container. If you want to build the image without running a MariaDB image, simply run:
+
+      docker build -t urllookup . 
+    
+
 ##### Manual execution:
 * Environment Setup: Ubuntu 20.04.1 LTS, 10.3.25-MariaDB-0ubuntu0.20.04.1, Python 3.8.5
 * Package installs:

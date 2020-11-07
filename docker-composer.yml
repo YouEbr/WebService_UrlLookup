@@ -1,0 +1,18 @@
+version: "3"
+services:
+  urllookup:
+    build: ./
+    links:
+      - mariadb
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mariadb
+    environment:
+      PYTHONUNBUFFERED: 1
+
+
+  mariadb:
+    image: linuxserver/mariadb
+    ports:
+      - "33060:3306"
