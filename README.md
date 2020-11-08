@@ -27,14 +27,11 @@ from accessing the URL until the caller receives a response from your service.
 
 The service must be containerized.
 
-Give some thought to the following:
+Give some thought to the following: (Final Challenges)
 
-1) The size of the URL list could grow infinitely, how might you scale this beyond
-the memory capacity of this VM? Bonus if you implement this.
-2) The number of requests may exceed the capacity of this VM, how might you
-solve that? Bonus if you implement this.
-3) What are some strategies you might use to update the service with new URLs?
-Updates may be as much as 5 thousand URLs a day with updates arriving every
+1) The size of the URL list could grow infinitely, how might you scale this beyond the memory capacity of this VM? (Bonus if you implement this)
+2) The number of requests may exceed the capacity of this VM, how might you solve that? (Bonus if you implement this)
+3) What are some strategies you might use to update the service with new URLs? Updates may be as much as 5 thousand URLs a day with updates arriving every
 10 minutes.
 
 #### Hints
@@ -91,6 +88,15 @@ Note: To build the image for the urllookup web service, run something like:
 
         python3 -m unittest discover tests
 
+
+#### Final Challenges
+See Description section for detail of each challenge.
+
+2- To address this issue, an NginX loadbalancer is added to direct the incoming traffic to any of the running instances of urllookup web app.
+To implement this,  nginx/nginx.conf, nginx/Dockerfile, and docker-compose_loadbalancer.yaml are added. To run the web service with loadbalancer, do:
+
+         docker-compose -f docker-compose_loadbalancer.yaml up --scale urllookup=3 --build
+Above command runs 3 instances of urlookup web app and load balances among them in round robin mode. To see it in action, run the above command, then direct your browser to  http://localhost:8080/urlinfo/1/google.com and refresh the page multiple times.  On terminal, you should see logs marked with the name of instances, e.g urllookup_1, urllookup_2, urllookup_3   
 
 
 #### Miscellaneous

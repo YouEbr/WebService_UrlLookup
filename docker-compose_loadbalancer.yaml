@@ -1,0 +1,24 @@
+version: "3"
+services:
+  urllookup:
+    image: youebr/urllookup:11072020
+    links:
+      - mariadb
+    ports:
+      - "5000"
+    depends_on:
+      - mariadb
+
+
+  mariadb:
+    image: linuxserver/mariadb
+    ports:
+      - "3306"
+
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - urllookup
