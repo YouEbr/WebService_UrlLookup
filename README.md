@@ -92,12 +92,15 @@ Note: To build the image for the urllookup web service, run something like:
 #### Final Challenges
 See Description section for detail of each challenge.
 
+1- TODO
+
 2- To address this issue, an NginX loadbalancer is added to direct the incoming traffic to any of the running instances of urllookup web app.
 To implement this,  nginx/nginx.conf, nginx/Dockerfile, and docker-compose_loadbalancer.yaml are added. To run the web service with loadbalancer, do:
 
          docker-compose -f docker-compose_loadbalancer.yaml up --scale urllookup=3 --build
 Above command runs 3 instances of urlookup web app and load balances among them in round robin mode. To see it in action, run the above command, then direct your browser to  http://localhost:8080/urlinfo/1/google.com and refresh the page multiple times.  On terminal, you should see logs marked with the name of instances, e.g urllookup_1, urllookup_2, urllookup_3   
 
+3- TODO
 
 #### Miscellaneous
  To allow running MariaDB without "sudo", in order words, if you are receiving following error:
