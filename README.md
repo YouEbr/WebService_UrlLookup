@@ -64,7 +64,7 @@ Note: In both options, prebuilt MariaDB image is pulled.
 Step 2:
 Direct your browser to the running container. To find the IP address of the running containers:
     
-     docker ps      # Give you the list of runnign containers and their IDs
+     docker ps      # Gives you the list of running containers and their IDs
      docker inspect DOCKER_ID | grep IPAddress
 
 Note: To build the image for the urllookup web service, run something like:
