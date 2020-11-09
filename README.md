@@ -62,10 +62,7 @@ Step 1:
 Note: In both options, prebuilt MariaDB image is pulled.
 
 Step 2:
-Direct your browser to the running container. To find the IP address of the running containers:
-    
-     docker ps      # Gives you the list of running containers and their IDs
-     docker inspect DOCKER_ID | grep IPAddress
+Direct your browser to http://localhost:8080/ (assuming everyting is running on your local machine) to get started. OR use something like https://www.postman.com/ to construct the GET requests.
 
 Note: To build the image for the urllookup web service, run something like:
 
@@ -106,7 +103,7 @@ Above command runs 3 instances of urlookup web app and load balances among them 
 3- TODO
 
 #### Miscellaneous
- To allow running MariaDB without "sudo", in order words, if you are receiving following error:
+-- To allow running MariaDB without "sudo", in order words, if you are receiving following error:
  
         Access denied for user 'root'@'localhost'
  
@@ -122,3 +119,9 @@ Then
         SELECT User,Host FROM mysql.user;
         CREATE USER 'YOUR USER NAME'@'%' IDENTIFIED BY ''; [optional: to use your username instead of root] 
         SELECT User,Host FROM mysql.user;  
+
+--  To find the IP address of the running containers:
+    
+     docker ps      # Gives you the list of running containers and their IDs
+     docker inspect DOCKER_ID | grep IPAddress
+
