@@ -100,6 +100,9 @@ To implement this,  nginx/nginx.conf, nginx/Dockerfile, and docker-compose_loadb
          docker-compose -f docker-compose_loadbalancer.yaml up --scale urllookup=3 --build
 Above command runs 3 instances of urlookup web app and load balances among them in round robin mode. To see it in action, run the above command, then direct your browser to  http://localhost:8080/urlinfo/1/google.com and refresh the page multiple times.  On terminal, you should see logs marked with the name of instances, e.g urllookup_1, urllookup_2, urllookup_3   
 
+###### Good to have: 
+* Right now, DB initialization is done in Python code (web service). It can be moved to MariaDB container (entrypoint-initdb) simialr to the implementation done in  https://github.com/YouEbr/mariadb_docker_init
+
 3- TODO
 
 #### Miscellaneous
